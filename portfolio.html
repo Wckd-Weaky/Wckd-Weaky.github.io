@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shubham Lakhani - Portfolio</title>
+    <style>
+        :root {
+            --primary-color: #e50914; --dark-color: #141414; --light-dark-color: #1d1d1d;
+            --text-color: #fff; --text-secondary: #a0a0a0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--dark-color); color: var(--text-color); overflow-x: hidden;
+        }
+        a { color: var(--text-color); text-decoration: none; }
+        h1, h2, h3 { font-weight: 700; }
+
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; display: flex;
+            justify-content: space-between; align-items: center; padding: 20px 50px;
+            z-index: 100; background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0));
+            transition: background 0.3s ease-in-out;
+        }
+        .logo { font-size: 2.5rem; color: var(--primary-color); font-weight: bold; text-transform: uppercase; }
+        .nav a { margin-left: 20px; font-size: 1rem; transition: color 0.3s; }
+        
+        #landing-page { display: block; }
+        .hero {
+            height: 100vh; display: flex; justify-content: center; align-items: center;
+            flex-direction: column; text-align: center;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover; background-position: center;
+        }
+        .hero h1 { font-size: 4rem; margin-bottom: 20px; }
+        .profiles { display: flex; gap: 30px; }
+        .profile { text-align: center; cursor: pointer; }
+        .profile img {
+            width: 150px; height: 150px; object-fit: cover; border-radius: 8px;
+            border: 4px solid transparent; transition: border-color 0.3s, transform 0.3s;
+        }
+        .profile:hover img { border-color: var(--text-color); transform: scale(1.05); }
+        .profile p { margin-top: 10px; font-size: 1.2rem; color: var(--text-secondary); }
+
+        .full-page {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh;
+            background-color: var(--dark-color); z-index: 200; overflow-y: auto;
+        }
+        .page-back-button {
+            position: absolute; top: 40px; left: 50px; font-size: 2rem;
+            font-weight: bold; color: var(--text-color); cursor: pointer; z-index: 210;
+        }
+        .content-section {
+            padding: 30px 50px;
+        }
+        .content-section:first-of-type {
+            padding-top: 120px;
+        }
+        
+        .row-title { font-size: 1.8rem; margin-bottom: 20px; border-left: 4px solid var(--primary-color); padding-left: 15px;}
+        .row-posters {
+            display: flex; overflow-y: hidden; overflow-x: scroll; padding: 20px 0;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .row-posters::-webkit-scrollbar { display: none; }
+        .poster {
+            object-fit: cover; width: 400px; height: 225px; margin-right: 15px; border-radius: 5px;
+            transition: transform 450ms; background-color: var(--light-dark-color);
+        }
+        .poster-container:hover .poster { transform: scale(1.08); }
+        .poster-container { position: relative; margin-right: 15px; flex-shrink: 0; cursor: pointer;}
+        .poster-title {
+            position: absolute; bottom: 10px; left: 10px; font-size: 1.5rem; font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        .text-section { max-width: 900px; line-height: 1.7; color: var(--text-secondary); }
+        .text-section b { color: var(--text-color); }
+        
+        .project-listing .project-item { margin-bottom: 30px; }
+        .project-listing h3 { font-size: 1.4rem; color: var(--text-color); cursor: pointer; }
+        .project-listing h3:hover { color: var(--primary-color); }
+        .project-listing .technologies { font-style: italic; color: var(--text-secondary); margin: 5px 0 10px 0; }
+        .project-listing .description { color: var(--text-secondary); margin-bottom: 10px; }
+        .project-listing .achievement {
+            background-color: var(--light-dark-color); border-left: 3px solid var(--primary-color);
+            padding: 10px; margin-top: 10px; font-weight: bold; color: var(--text-color);
+        }
+
+        .hobby-card {
+            background-color: var(--light-dark-color); border-radius: 8px; padding: 25px;
+            text-align: center; width: 250px; margin-right: 20px;
+        }
+        
+        .footer { text-align: center; padding: 40px 20px; border-top: 1px solid #333; }
+        
+        /* --- Project Brief Page (Overlay) Styles --- */
+        .project-brief-page {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(20, 20, 20, 0.95);
+            z-index: 300; overflow-y: auto; padding: 40px;
+            align-items: center; justify-content: center; flex-direction: column;
+        }
+        .brief-back-button {
+            position: absolute; top: 40px; left: 50px; font-size: 2rem;
+            font-weight: bold; color: var(--text-color); cursor: pointer;
+        }
+        .project-brief-content { text-align: center; max-width: 900px; }
+        .project-brief-content img { max-width: 100%; height: auto; max-height: 400px; border-radius: 8px; margin: 20px 0; }
+        .project-brief-content h2 { font-size: 3rem; margin-bottom: 20px; }
+        .project-brief-content p { font-size: 1.1rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 30px; }
+        .project-link {
+            display: inline-block; padding: 12px 25px; background-color: var(--primary-color);
+            color: var(--text-color); border-radius: 5px; font-weight: bold; transition: background-color 0.3s;
+        }
+        .project-link:hover { background-color: #f6121d; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .profiles { flex-direction: column; gap: 20px; }
+            .content-section { padding: 20px; }
+            .page-back-button, .brief-back-button { left: 20px; top: 20px; font-size: 1.5rem; }
+            .content-section:first-of-type { padding-top: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="landing-page">
+        <header class="header">
+            <a href="#" class="logo">SL</a>
+            <nav class="nav">
+                <a href="https://github.com/Wckd-Weaky" target="_blank">GitHub</a>
+                <a href="mailto:shubhamlakhani2004@gmail.com">Contact</a>
+            </nav>
+        </header>
+        <div class="hero">
+             <h1>Who's Watching?</h1>
+             <div class="profiles">
+                 <div class="profile" onclick="showPage('recruiter-page')"><img src="images/profile-recruiter.png" alt="Recruiter"><p>Recruiter</p></div>
+                 <div class="profile" onclick="showPage('developer-page')"><img src="images/profile-developer.png" alt="Developer"><p>Developer</p></div>
+                 <div class="profile" onclick="showPage('curious-page')"><img src="images/profile-curious.png" alt="Curious"><p>Just Curious</p></div>
+             </div>
+        </div>
+        <footer class="footer"><p>&copy; 2025 Shubham Lakhani. Inspired by Netflix.</p></footer>
+    </div>
+
+    <div id="recruiter-page" class="full-page">
+        <a class="page-back-button" onclick="showLandingPage()">&larr; Back</a>
+        <main>
+            <div class="content-section">
+                <h2 class="row-title">Career Objective</h2>
+                <p class="text-section">Adaptable and detail-oriented Computer Engineering undergraduate skilled in problem-solving, data analysis, and optimization. Looking to apply technical expertise and a continuous learning mindset in a challenging entry-level role.</p>
+            </div>
+            <div class="content-section">
+                <h2 class="row-title">Academic Projects</h2>
+                <div class="row-posters">
+                    <div class="poster-container" onclick="showBriefPage('brief-internportal')"><img class="poster" src="images/project-internportal.png" alt="InternPortal"><div class="poster-title">InternPortal</div></div>
+                    <div class="poster-container" onclick="showBriefPage('brief-fakenews')"><img class="poster" src="images/project-fakenews.png" alt="Fake News Detection"><div class="poster-title">Fake News Detection</div></div>
+                    <div class="poster-container" onclick="showBriefPage('brief-chess')"><img class="poster" src="images/project-chess.png" alt="React Chess Game"><div class="poster-title">React Chess Game</div></div>
+                </div>
+            </div>
+            <div class="content-section">
+                <h2 class="row-title">Technical Skills</h2>
+                 <div class="row-posters">
+                    <div class="poster-container"><img class="poster" src="images/skill-python.png" alt="Python"><div class="poster-title">Python</div></div>
+                    <div class="poster-container"><img class="poster" src="images/skill-java.png" alt="Java"><div class="poster-title">Java</div></div>
+                    <div class="poster-container"><img class="poster" src="images/skill-scikit.png" alt="Scikit-learn"><div class="poster-title">Scikit-learn</div></div>
+                    <div class="poster-container"><img class="poster" src="images/skill-pandas.png" alt="Pandas"><div class="poster-title">Pandas</div></div>
+                    <div class="poster-container"><img class="poster" src="images/skill-mysql.png" alt="MySQL"><div class="poster-title">MySQL</div></div>
+                    <div class="poster-container"><img class="poster" src="images/skill-git.png" alt="Git"><div class="poster-title">Git</div></div>
+                </div>
+            </div>
+             <div class="content-section">
+                <h2 class="row-title">Internships</h2>
+                <p class="text-section"><b>SEO Intern | Cannibals Media Limited:</b> Conducted keyword research, competitor analysis, and on-page SEO. <br> <b>Astronomy & Astrophysics Intern | India Space Academy:</b> Performed data-driven astronomy research and analysis.</p>
+            </div>
+        </main>
+    </div>
+
+    <div id="developer-page" class="full-page">
+        <a class="page-back-button" onclick="showLandingPage()">&larr; Back</a>
+        <main>
+             <div class="content-section">
+                <h2 class="row-title">Core Projects</h2>
+                <div class="row-posters">
+                    <div class="poster-container" onclick="showBriefPage('brief-internportal')"><img class="poster" src="images/project-internportal.png" alt="InternPortal"><div class="poster-title">InternPortal (MERN)</div></div>
+                    <div class="poster-container" onclick="showBriefPage('brief-fakenews')"><img class="poster" src="images/project-fakenews.png" alt="Fake News Detection"><div class="poster-title">Fake News (Python/ML)</div></div>
+                    <div class="poster-container" onclick="showBriefPage('brief-chess')"><img class="poster" src="images/project-chess.png" alt="React Chess Game"><div class="poster-title">React Chess Game</div></div>
+                </div>
+            </div>
+             <div class="content-section">
+                <h2 class="row-title">JavaScript Mini-Projects</h2>
+                <div class="row-posters">
+                    <div class="poster-container" onclick="showBriefPage('brief-todo')"><img class="poster" src="images/project-todo.png" alt="To-Do App"><div class="poster-title">To-Do App</div></div>
+                    <div class="poster-container" onclick="showBriefPage('brief-password')"><img class="poster" src="images/project-password.png" alt="Password Generator"><div class="poster-title">Password Generator</div></div>
+                    <div class="poster-container" onclick="showBriefPage('brief-alarm')"><img class="poster" src="images/project-alarm.png" alt="Alarm Clock"><div class="poster-title">Alarm Clock</div></div>
+                    <div class="poster-container" onclick="showBriefPage('brief-tictactoe')"><img class="poster" src="images/project-tictactoe.png" alt="Tic Tac Toe"><div class="poster-title">Tic-Tac-Toe</div></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="curious-page" class="full-page">
+        <a class="page-back-button" onclick="showLandingPage()">&larr; Back</a>
+        <main>
+             <div class="content-section">
+                <h2 class="row-title">Education</h2>
+                <p class="text-section">
+                    <b>B.Tech in Computer Science and Engineering | 2022-2026</b> <br>
+                    Pandit Deendayal Energy University, Gandhinagar <br><br>
+                    <b>Twelfth Grade (2022)</b> - Puna International School, Ahmedabad <br>
+                    <b>Tenth Grade (2020)</b> - Amarchand Singhvi International School, Gandhidham
+                </p>
+            </div>
+            <div class="content-section">
+                <h2 class="row-title">Hobbies</h2>
+                <div class="row-posters">
+                    <div class="hobby-card"><h3>Reading Fiction</h3><p>Diving into different worlds and stories.</p></div>
+                    <div class="hobby-card"><h3>Chess</h3><p>Wanna try your luck? <a href="https://www.chess.com/member/ethsabs" target="_blank">Challenge me.</a></p></div>
+                    <div class="hobby-card"><h3>Movies & Gaming</h3><p>Love a good cinematic experience.</p></div>
+                </div>
+            </div>
+             <div class="content-section">
+                <h2 class="row-title">A Project I Enjoyed</h2>
+                 <div class="row-posters">
+                    <div class="poster-container" onclick="showBriefPage('brief-chess')"><img class="poster" src="images/project-chess.png" alt="React Chess Game"><div class="poster-title">A Playable Chess Game</div></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="brief-internportal" class="project-brief-page">
+        <a class="brief-back-button" onclick="hideBriefPages()">&larr; Back</a>
+        <div class="project-brief-content">
+            <img src="images/project-internportal.png" alt="InternPortal">
+            <h2>InternPortal</h2>
+            <p>Full-stack web application to streamline internship processes. Improved efficiency by over 40%.<br><b>Technologies:</b> React, Node, Express, MongoDB, Docker, GCP.</p>
+            <a href="https://github.com/Wckd-Weaky" class="project-link" target="_blank">View on GitHub</a>
+        </div>
+    </div>
+    <div id="brief-fakenews" class="project-brief-page">
+        <a class="brief-back-button" onclick="hideBriefPages()">&larr; Back</a>
+        <div class="project-brief-content">
+            <img src="images/project-fakenews.png" alt="Fake News Detection">
+            <h2>Fake News Detection</h2>
+            <p>ML model to classify news as real or fake, achieving 94% accuracy.<br><b>Technologies:</b> Python, Scikit-learn, Pandas, NumPy.</p>
+            <a href="https://github.com/Wckd-Weaky" class="project-link" target="_blank">View on GitHub</a>
+        </div>
+    </div>
+    <div id="brief-chess" class="project-brief-page">
+        <a class="brief-back-button" onclick="hideBriefPages()">&larr; Back</a>
+        <div class="project-brief-content">
+            <img src="images/project-chess.png" alt="React Chess Game">
+            <h2>React Chess Game</h2>
+            <p>Interactive browser-based chess game with real-time move validation.<br><b>Technologies:</b> React.js, Node.js, HTML5, CSS.</p>
+            <a href="https://github.com/Wckd-Weaky" class="project-link" target="_blank">View on GitHub</a>
+        </div>
+    </div>
+    <div id="brief-todo" class="project-brief-page">
+        <a class="brief-back-button" onclick="hideBriefPages()">&larr; Back</a>
+        <div class="project-brief-content">
+            <img src="images/project-todo.png" alt="To-Do App">
+            <h2>To-Do App</h2>
+            <p>A classic To-Do List app to add, delete, and complete tasks, built with vanilla JavaScript.</p>
+            <a href="https://github.com/Wckd-Weaky/To-Do-App-JavaScript" class="project-link" target="_blank">View on GitHub</a>
+        </div>
+    </div>
+    <div id="brief-password" class="project-brief-page">
+        <a class="brief-back-button" onclick="hideBriefPages()">&larr; Back</a>
+        <div class="project-brief-content">
+            <img src="images/project-password.png" alt="Password Generator">
+            <h2>Password Generator</h2>
+            <p>A utility to generate strong, random passwords based on user-selected criteria.</p>
+            <a href="https://github.com/Wckd-Weaky/Password-Generator" class="project-link" target="_blank">View on GitHub</a>
+        </div>
+    </div>
+    <div id="brief-alarm" class="project-brief-page">
+        <a class="brief-back-button" onclick="hideBriefPages()">&larr; Back</a>
+        <div class="project-brief-content">
+            <img src="images/project-alarm.png" alt="Alarm Clock">
+            <h2>Alarm Clock</h2>
+            <p>A functional digital alarm clock to demonstrate working with time and intervals in JavaScript.</p>
+            <a href="https://github.com/Wckd-Weaky/Alarm-Clock" class="project-link" target="_blank">View on GitHub</a>
+        </div>
+    </div>
+    <div id="brief-tictactoe" class="project-brief-page">
+        <a class="brief-back-button" onclick="hideBriefPages()">&larr; Back</a>
+        <div class="project-brief-content">
+            <img src="images/project-tictactoe.png" alt="Tic Tac Toe">
+            <h2>Tic-Tac-Toe</h2>
+            <p>The classic two-player game brought to the browser to practice game logic and array manipulation.</p>
+            <a href="https://github.com/Wckd-Weaky/Tic-Tac-Toe" class="project-link" target="_blank">View on GitHub</a>
+        </div>
+    </div>
+
+    <script>
+        const allMainPages = document.querySelectorAll('.full-page, #landing-page');
+        const allBriefPages = document.querySelectorAll('.project-brief-page');
+
+        function showPage(pageId) {
+            allMainPages.forEach(page => { page.style.display = 'none'; });
+            const pageToShow = document.getElementById(pageId);
+            if (pageToShow) {
+                pageToShow.style.display = 'block';
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function showLandingPage() {
+            showPage('landing-page');
+        }
+
+        function showBriefPage(briefPageId) {
+            const briefPageToShow = document.getElementById(briefPageId);
+            if (briefPageToShow) {
+                briefPageToShow.style.display = 'flex';
+            }
+        }
+        
+        function hideBriefPages() {
+            allBriefPages.forEach(page => {
+                page.style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
